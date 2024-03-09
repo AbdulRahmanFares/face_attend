@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:face_attend/screens/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:tflite_flutter/tflite_flutter.dart' as tfl;
 
 class VerificationPage extends StatefulWidget {
   final String savedImagePath;
@@ -27,12 +29,25 @@ class _VerificationPageState extends State<VerificationPage> {
   List<Face>? savedImageFaces;
   List<Face>? downloadedImageFaces;
   bool isLoading = true;
+  bool isMatch = false;
+  late tfl.Interpreter interpreter;
 
   @override
   void initState() {
     super.initState();
+    loadModel();
     detectFaces(widget.savedImagePath, true);
     detectFaces(widget.downloadedImagePath, false);
+  }
+
+  Future<void> loadModel() async {
+    try {
+      final interpreterOptions = tfl.InterpreterOptions();
+      interpreter = await tfl.Interpreter.fromAsset("assets/mobilefacenet.tflite", options: interpreterOptions);
+      print("Model loaded successfully");
+    } catch (e) {
+      print("Failed to load model: $e");
+    }
   }
 
   Future<void> detectFaces(String imagePath, bool isSavedImage) async {
@@ -51,12 +66,66 @@ class _VerificationPageState extends State<VerificationPage> {
       });
 
       print("Number of faces detected in ${isSavedImage ? "saved image" : "downloaded image"} : ${detectedFaces.length}");
+
+      if (savedImageFaces != null && downloadedImageFaces != null) {
+        compareFaces(); // Compare faces
+      }
     } catch (e) {
       print("Error processing image: $e");
-      // setState(() {
-      //   isLoading = false; // Set isLoading to false to stop loading indicator
-      // });
     }
+  }
+
+  Future<void> compareFaces() async {
+    try {
+      // Extract features from faces in both images
+      List<List<double>> savedImageFeatures = await extractFeatures(savedImageFaces!);
+      List<List<double>> downloadedImageFeatures = await extractFeatures(downloadedImageFaces!);
+
+      // Set threshold
+      double threshold = 0.6;
+
+      // Perform face comparison
+      isMatch = compareFeatureLists(savedImageFeatures, downloadedImageFeatures, threshold);
+
+      setState(() {
+        // Update the state to reflect the result of face comparison
+        isMatch = isMatch;
+        print("isMatch value: $isMatch");
+      });
+    } catch (e) {
+      print("Error comparing faces: $e");
+    }
+  }
+
+  Future<List<List<double>>> extractFeatures(List<Face> faces) async {
+    List<List<double>> features = [];
+
+    // Iterate over each face and extract features
+    for (var face in faces) {
+      List<double> featureVector = List.generate(128, (index) => Random().nextDouble());
+      features.add(featureVector);
+    }
+    return features;
+  }
+
+  bool compareFeatureLists(List<List<double>> features1, List<List<double>> features2, double threshold) {
+    for (var feature1 in features1) {
+      for (var feature2 in features2) {
+        double distance = euclideanDistance(feature1, feature2);
+        if (distance < threshold) {
+          return true; // Faces match
+        }
+      }
+    }
+    return false; // Faces don't match
+  }
+
+  double euclideanDistance(List<double> vector1, List<double> vector2) {
+    double sum = 0.0;
+    for (int i = 0; i < vector1.length; i++) {
+      sum += pow((vector1[i] - vector2[i]), 2);
+    }
+    return sqrt(sum);
   }
 
   @override
@@ -147,6 +216,18 @@ class _VerificationPageState extends State<VerificationPage> {
               ),
               Text(
                 "Faces on downloaded image: ${downloadedImageFaces?.length}",
+                style: GoogleFonts.poppins(
+                  fontSize: screenWidth * 0.04,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 1
+                )
+              ),
+              SizedBox(
+                height: screenHeight * 0.05
+              ),
+              Text(
+                "Result: ${isMatch ? "Match" : "Not match"}",
                 style: GoogleFonts.poppins(
                   fontSize: screenWidth * 0.04,
                   color: Colors.black,

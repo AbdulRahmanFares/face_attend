@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
                       Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) => HomePage(employeeName: employeeName)
                       ));
-                    } else if (nameController.text == "Esakki") {
+                    } else if (nameController.text == "Suriya") {
                       employeeName = nameController.text;
                       Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) => HomePage(employeeName: employeeName)
@@ -103,7 +103,7 @@ class _LoginState extends State<Login> {
                       Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) => HomePage(employeeName: employeeName)
                       ));
-                    } else if (nameController.text == "Shakthi") {
+                    } else if (nameController.text == "Sakthi") {
                       employeeName = nameController.text;
                       Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) => HomePage(employeeName: employeeName)

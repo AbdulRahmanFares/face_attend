@@ -50,7 +50,9 @@ class _CameraPageState extends State<CameraPage> {
     );
     cameraController = CameraController(camera, ResolutionPreset.high);
     await cameraController.initialize();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   // Capture image from camera
@@ -67,14 +69,16 @@ class _CameraPageState extends State<CameraPage> {
 
       final File savedImageFile = File(filePath);
       if (await savedImageFile.exists()) {
-        setState(() {
-          savedImagePath = filePath;
-          isImageCaptured = true;
-          cameraEntryType = "IN";
-          print("File uploaded successfully");
-          print("Uploaded file path: $filePath");
-          print("Uploaded file name: $fileName");
-        });
+        if (mounted) {
+          setState(() {
+            savedImagePath = filePath;
+            isImageCaptured = true;
+            cameraEntryType = "IN";
+            print("File uploaded successfully");
+            print("Uploaded file path: $filePath");
+            print("Uploaded file name: $fileName");
+          });
+        }
       }
     }
   }
@@ -83,7 +87,8 @@ class _CameraPageState extends State<CameraPage> {
   Future<void> getImagePathAndDownloadImage(String employeeName) async {
     final Dio dio = Dio();
     final response = await dio.get(
-      "https://epistatehealth.com/Fares/smart_attendance/get_image_path",
+      // "https://epistatehealth.com/Fares/smart_attendance/get_image_path",
+      "https://hgilapp.000webhostapp.com/SmartAttendanceAPI/get_image_path.php",
       queryParameters: {"employeeName" : employeeName}
     );
 
@@ -98,7 +103,8 @@ class _CameraPageState extends State<CameraPage> {
       print("Image path is empty");
     } else {
       // When image path is not empty
-      final String imageUrl = "https://epistatehealth.com/Fares/smart_attendance/$message";
+      // final String imageUrl = "https://epistatehealth.com/Fares/smart_attendance/$message";
+      final String imageUrl = "https://hgilapp.000webhostapp.com/SmartAttendanceAPI/$message";
       await downloadAndSaveImage(imageUrl, employeeName);
     }
   }
@@ -113,17 +119,19 @@ class _CameraPageState extends State<CameraPage> {
 
     await dio.download(imageUrl, filePath);
 
-    setState(() {
-      downloadedImagePath = filePath;
+    if (mounted) {
+      setState(() {
+        downloadedImagePath = filePath;
 
-      print("Image downloaded and saved to: $filePath");
-      print("File name: $fileName");
+        print("Image downloaded and saved to: $filePath");
+        print("File name: $fileName");
 
-      print("Saved image path: $widget.savedImagePath");
-      print("Downloaded image path: $downloadedImagePath");
+        print("Saved image path: $widget.savedImagePath");
+        print("Downloaded image path: $downloadedImagePath");
 
-      // compareFaces(savedImagePath, downloadedImagePath);
-    });
+        // compareFaces(savedImagePath, downloadedImagePath);
+      });
+    }
   }
 
   @override

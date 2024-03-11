@@ -1,5 +1,6 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:face_attend/screens/camera_page.dart';
+import 'package:face_attend/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -24,8 +25,22 @@ class _HomePageState extends State<HomePage> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return ColorfulSafeArea(
-      color: Colors.white,
+      color: Colors.teal,
       child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.teal,
+          title: Text(
+            "SMART ATTENDANCE",
+            style: GoogleFonts.poppins(
+              fontSize: screenWidth * 0.045,
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              letterSpacing: 1
+            )
+          ),
+          centerTitle: true
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -45,22 +60,29 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: screenHeight * 0.05
               ),
-              Container(
-                alignment: Alignment.center,
-                height: screenHeight * 0.07,
-                width: screenWidth * 0.7,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey
-                  )
-                ),
-                child: Text(
-                  "SMART ATTENDANCE",
-                  style: GoogleFonts.poppins(
-                    fontSize: screenWidth * 0.045,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 1
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(
+                    builder: (context) => const Login() // Navigate to login page
+                  ));
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  height: screenHeight * 0.06,
+                  width: screenWidth * 0.3,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey
+                    )
+                  ),
+                  child: Text(
+                    "LOGOUT",
+                    style: GoogleFonts.poppins(
+                      fontSize: screenWidth * 0.04,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 1
+                    )
                   )
                 )
               )

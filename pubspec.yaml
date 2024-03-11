@@ -44,6 +44,8 @@ dependencies:
   get_it: ^7.6.7
   loading_animation_widget: ^1.2.0+4
   tflite_flutter: ^0.10.4
+  image: ^4.1.7
+  flutter_face_api: ^6.1.0
 
 dev_dependencies:
   flutter_test:

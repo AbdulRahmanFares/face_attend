@@ -32,12 +32,12 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "LOGIN",
+                "Welcome!",
                 style: GoogleFonts.poppins(
                   fontSize: screenWidth * 0.05,
-                  color: Colors.black,
+                  color: Colors.teal,
                   fontWeight: FontWeight.w600,
-                  letterSpacing: 2
+                  letterSpacing: 1
                 )
               ),
               SizedBox(
@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
                       Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) => HomePage(employeeName: employeeName)
                       ));
-                    } else if (nameController.text == "Suriya") {
+                    } else if (nameController.text == "Esakki") {
                       employeeName = nameController.text;
                       Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) => HomePage(employeeName: employeeName)
@@ -122,7 +122,7 @@ class _LoginState extends State<Login> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.teal,
                   fixedSize: Size(screenWidth * 0.8, screenHeight * 0.07),
                   shape: const RoundedRectangleBorder()
                 ),

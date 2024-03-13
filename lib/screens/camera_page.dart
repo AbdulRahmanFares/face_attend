@@ -171,7 +171,7 @@ class _CameraPageState extends State<CameraPage> {
               height: screenHeight * 0.11,
               width: screenWidth * 0.8,
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: Colors.black.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(screenWidth)
               ),
               child: Row(

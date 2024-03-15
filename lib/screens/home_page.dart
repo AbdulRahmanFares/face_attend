@@ -1,4 +1,5 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:face_attend/constants.dart';
 import 'package:face_attend/screens/camera_page.dart';
 import 'package:face_attend/screens/login.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final obj = Constants();
+
   @override
   Widget build(BuildContext context) {
 
@@ -25,41 +29,57 @@ class _HomePageState extends State<HomePage> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return ColorfulSafeArea(
-      color: Colors.teal,
+      color: obj.kashmirBlue,
       child: Scaffold(
+        backgroundColor: obj.whiteShade,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.teal,
+          backgroundColor: obj.kashmirBlue,
+          toolbarHeight: screenHeight * 0.07,
           title: Text(
             "SMART ATTENDANCE",
             style: GoogleFonts.poppins(
               fontSize: screenWidth * 0.045,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               color: Colors.white,
               letterSpacing: 1
             )
           ),
           centerTitle: true
         ),
+
+        // Camera
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => CameraPage(employeeName: widget.employeeName)
-                  ));
-                },
-                icon: Icon(
-                  Icons.camera_rounded,
-                  size: screenHeight * 0.1,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) => CameraPage(employeeName: widget.employeeName) // Navigate to camera page
+              ));
+            },
+            child: Container(
+              height: screenHeight * 0.2,
+              width: screenHeight * 0.2,
+              decoration: BoxDecoration(
+                color: obj.lavender,
+                border: Border.all(
                   color: Colors.grey
-                )
+                ),
+                borderRadius: BorderRadius.circular(screenWidth)
               ),
-              SizedBox(
-                height: screenHeight * 0.05
-              ),
+              child: Icon(
+                Icons.camera_alt_rounded,
+                size: screenHeight * 0.08,
+                color: obj.greyShade
+              )
+            )
+          )
+        ),
+        bottomNavigationBar: SizedBox(
+          height: screenHeight * 0.08,
+          child: Column(
+            children: [
+
+              // Logout button
               GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(context, MaterialPageRoute(
@@ -67,21 +87,19 @@ class _HomePageState extends State<HomePage> {
                   ));
                 },
                 child: Container(
-                  alignment: Alignment.center,
-                  height: screenHeight * 0.06,
-                  width: screenWidth * 0.3,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey
+                  height: screenHeight * 0.03,
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.grey
+                      )
                     )
                   ),
                   child: Text(
-                    "LOGOUT",
+                    "Logout",
                     style: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.04,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 1
+                      color: Colors.black
                     )
                   )
                 )

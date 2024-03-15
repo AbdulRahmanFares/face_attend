@@ -1,4 +1,5 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:face_attend/constants.dart';
 import 'package:face_attend/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
+  final obj = Constants();
   String employeeName = "";
   String hintText = "Name";
   Color hintTextColor = Colors.black54;
@@ -25,18 +27,32 @@ class _LoginState extends State<Login> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return ColorfulSafeArea(
-      color: Colors.white,
+      color: obj.whiteShade,
       child: Scaffold(
+        backgroundColor: obj.whiteShade,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Welcome!",
+                "Hey,",
                 style: GoogleFonts.poppins(
                   fontSize: screenWidth * 0.05,
-                  color: Colors.teal,
-                  fontWeight: FontWeight.w600,
+                  color: obj.kashmirBlue,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1
+                )
+              ),
+              SizedBox(
+                height: screenHeight * 0.015
+              ),
+              Text(
+                "Login now.",
+                style: GoogleFonts.poppins(
+                  fontSize: screenWidth * 0.05,
+                  color: obj.kashmirBlue,
+                  fontWeight: FontWeight.w700,
                   letterSpacing: 1
                 )
               ),
@@ -122,7 +138,7 @@ class _LoginState extends State<Login> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
+                  backgroundColor: obj.kashmirBlue,
                   fixedSize: Size(screenWidth * 0.8, screenHeight * 0.07),
                   shape: const RoundedRectangleBorder()
                 ),

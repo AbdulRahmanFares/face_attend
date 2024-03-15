@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:colorful_safe_area/colorful_safe_area.dart';
+import 'package:face_attend/constants.dart';
 import 'package:face_attend/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,6 +26,7 @@ class VerificationPage extends StatefulWidget {
 
 class _VerificationPageState extends State<VerificationPage> {
 
+  final obj = Constants();
   bool isLoading = true;
   bool isMatch = false;
 
@@ -51,14 +53,23 @@ class _VerificationPageState extends State<VerificationPage> {
 
   // Function to compare faces
   Future<void> compareFaces() async {
+    final image1File = File(widget.savedImagePath);
+    final image2File = File(widget.downloadedImagePath);
+
+    // Wait for both files to be read and encoded concurrently
+    List<List<int>> encodedImages = await Future.wait([
+      image1File.readAsBytes(),
+      image2File.readAsBytes()
+    ]);
+
     final image1 = regula.MatchFacesImage();
     final image2 = regula.MatchFacesImage();
 
-    // Set image bitmaps
-    image1.bitmap = base64Encode(File(widget.savedImagePath).readAsBytesSync());
+    // Set image bitmaps from the encoded images
+    image1.bitmap = base64Encode(encodedImages[0]);
     image1.imageType = regula.ImageType.PRINTED;
 
-    image2.bitmap = base64Encode(File(widget.downloadedImagePath).readAsBytesSync());
+    image2.bitmap = base64Encode(encodedImages[1]);
     image2.imageType = regula.ImageType.PRINTED;
 
     // Prepare request
@@ -96,124 +107,127 @@ class _VerificationPageState extends State<VerificationPage> {
       color: Colors.white,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: isLoading
-          ? Center(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                CircleAvatar(
-                  radius: screenWidth * 0.31,
-                  backgroundColor: Colors.grey,
-                  child: CircleAvatar(
-                    radius: screenWidth * 0.3,
-                    backgroundColor: Colors.cyan.withOpacity(0.5),
-                    backgroundImage: FileImage(File(widget.savedImagePath))
-                  )
-                ),
-                LoadingAnimationWidget.beat(
-                  color: Colors.cyan.withOpacity(0.5),
-                  size: screenWidth * 0.55
-                )
-              ]
-            )
-          )
-          : SizedBox(
-            width: screenWidth,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: screenHeight * 0.1
-                ),
-                Text(
-                  isMatch
+        body: SizedBox(
+          width: screenWidth,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: screenHeight * 0.1
+              ),
+              Text(
+                isLoading
+                  ? "Hold Still"
+                  : isMatch
                     ? "Check-in Successful"
                     : "Face Not Matched",
-                  style: GoogleFonts.poppins(
-                    fontSize: screenWidth * 0.055,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600
-                  )
-                ),
-                SizedBox(
-                  height: screenHeight * 0.02
-                ),
-                Text(
-                  isMatch
+                style: GoogleFonts.poppins(
+                  fontSize: screenWidth * 0.055,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600
+                )
+              ),
+              SizedBox(
+                height: screenHeight * 0.02
+              ),
+              Text(
+                isLoading
+                  ? "while we work our magic"
+                  : isMatch
                     ? "Photo has been matched"
                     : "Please try again or contact support",
-                  style: GoogleFonts.poppins(
-                    fontSize: screenWidth * 0.035,
-                    color: Colors.black,
-                    letterSpacing: 1
-                  )
-                ),
-                Text(
-                  isMatch
-                    ? "successfully"
-                    : "",
-                  style: GoogleFonts.poppins(
-                    fontSize: screenWidth * 0.035,
-                    color: Colors.black,
-                    letterSpacing: 1
-                  )
-                ),
-                SizedBox(
-                  height: screenHeight * 0.1
-                ),
-                SizedBox(
-                  width: screenWidth * 0.5,
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: screenWidth * 0.15,
-                        backgroundColor: isMatch
+                style: GoogleFonts.poppins(
+                  fontSize: screenWidth * 0.035,
+                  color: Colors.black,
+                  letterSpacing: 1
+                )
+              ),
+              Text(
+                isMatch
+                  ? "successfully"
+                  : "",
+                style: GoogleFonts.poppins(
+                  fontSize: screenWidth * 0.035,
+                  color: Colors.black,
+                  letterSpacing: 1
+                )
+              ),
+              SizedBox(
+                height: screenHeight * 0.1
+              ),
+              SizedBox(
+                width: screenWidth * 0.5,
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: screenWidth * 0.15,
+                      backgroundColor: isLoading
+                        ? obj.kashmirBlue
+                        : isMatch
                           ? Colors.green
-                          : Colors.red,
+                          : Colors.redAccent,
+                      child: CircleAvatar(
+                        radius: screenWidth * 0.14,
+                        backgroundColor: Colors.white,
                         child: CircleAvatar(
-                          radius: screenWidth * 0.14,
+                          radius: screenWidth * 0.13,
                           backgroundColor: Colors.cyan.withOpacity(0.5),
                           backgroundImage: FileImage(File(widget.savedImagePath))
                         )
-                      ),
-                      Positioned(
-                        left: screenWidth * 0.2,
-                        child: CircleAvatar(
-                          radius: screenWidth * 0.15,
-                          backgroundColor: isMatch
+                      )
+                    ),
+                    Positioned(
+                      left: screenWidth * 0.2,
+                      child: CircleAvatar(
+                        radius: screenWidth * 0.15,
+                        backgroundColor: isLoading
+                          ? obj.kashmirBlue
+                          : isMatch
                             ? Colors.green
-                            : Colors.red,
+                            : Colors.redAccent,
+                        child: CircleAvatar(
+                          radius: screenWidth * 0.14,
+                          backgroundColor: Colors.white,
                           child: CircleAvatar(
-                            radius: screenWidth * 0.14,
+                            radius: screenWidth * 0.13,
                             backgroundColor: Colors.cyan.withOpacity(0.5),
                             backgroundImage: FileImage(File(widget.downloadedImagePath))
-                          ),
+                          )
                         )
                       )
-                    ]
+                    )
+                  ]
+                )
+              )
+            ]
+          )
+        ),
+        bottomNavigationBar: SizedBox(
+          height: screenHeight * 0.25,
+          child: Column(
+            children: [
+              isLoading
+                ? SizedBox(
+                  height: screenHeight * 0.1,
+                  child: LoadingAnimationWidget.hexagonDots(
+                    color: Colors.cyan.withOpacity(0.3),
+                    size: screenHeight * 0.1
                   )
                 )
-              ]
-            )
-          ),
-        bottomNavigationBar: isLoading
-          ? null
-          : SizedBox(
-            height: screenHeight * 0.25,
-            child: Column(
-              children: [
-                Image.asset(
+                : Image.asset(
                   isMatch
                     ? "assets/tick.png"
                     : "assets/cross.png",
                   height: screenHeight * 0.1
                 ),
-                SizedBox(
-                  height: screenHeight * 0.05
-                ),
+              SizedBox(
+                height: screenHeight * 0.05
+              ),
 
-                // Home button
-                GestureDetector(
+              // Home button
+              isLoading
+                ? const SizedBox()
+                : GestureDetector(
                   onTap: () {
                     Navigator.pushReplacement(context, MaterialPageRoute(
                       builder: (context) => HomePage(employeeName: widget.employeeName)
@@ -237,9 +251,9 @@ class _VerificationPageState extends State<VerificationPage> {
                     )
                   )
                 )
-              ]
-            )
+            ]
           )
+        )
       )
     );
   }
